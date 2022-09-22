@@ -93,8 +93,12 @@ export class EventsService {
   @Get('events')
   async getEventsWithWorkshops() {
     // throw new Error('TODO task 1');
-    const data = await createQueryBuilder('event').leftJoinAndSelect("event.workshop", "ws").select(['event.id', 'event.name', 'event.createdAt', 'ws.id', 'ws.start', 'ws.end', 'ws.eventId', 'ws.name', 'ws.createdAt']).getMany();
-    return data;
+    try {
+      const data = await this.eventRepository.createQueryBuilder('event').leftJoinAndSelect("event.workshop", "ws").select(['event.id', 'event.name', 'event.createdAt', 'ws.id', 'ws.start', 'ws.end', 'ws.eventId', 'ws.name', 'ws.createdAt']).getMany();
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   /*
@@ -164,6 +168,16 @@ export class EventsService {
      */
   @Get('futureevents')
   async getFutureEventWithWorkshops() {
-    throw new Error('TODO task 2');
+    // throw new Error('TODO task 2');
+    try {
+      const result = await this.eventRepository.createQueryBuilder('event').leftJoinAndSelect("event.workshop", "ws")
+      .select(['event.id', 'event.name', 'event.createdAt', 'ws.id', 'ws.start', 'ws.end', 
+      'ws.eventId', 'ws.name', 'ws.createdAt'])
+      .where('ws.start > :start_at AND event.id != :eventId', { start_at: new Date(), eventId: 1 })
+      .getMany();
+      return result;
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
