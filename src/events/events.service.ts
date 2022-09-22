@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { createQueryBuilder, Repository } from 'typeorm';
 import { Get, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Event } from './entities/event.entity';
@@ -92,7 +92,9 @@ export class EventsService {
 
   @Get('events')
   async getEventsWithWorkshops() {
-    throw new Error('TODO task 1');
+    // throw new Error('TODO task 1');
+    const data = await createQueryBuilder('event').leftJoinAndSelect("event.workshop", "ws").select(['event.id', 'event.name', 'event.createdAt', 'ws.id', 'ws.start', 'ws.end', 'ws.eventId', 'ws.name', 'ws.createdAt']).getMany();
+    return data;
   }
 
   /*
