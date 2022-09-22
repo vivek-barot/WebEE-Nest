@@ -84,6 +84,16 @@ export class MenuItemsService {
     ]
   */
   async getMenuItems() {
-    throw new Error('TODO in task 3');
+    // throw new Error('TODO in task 3');
+
+    try {
+        const result = await this.menuItemRepository.createQueryBuilder('menu_item').leftJoinAndSelect("menu_item.menu_item", "ms")
+        .select(['menu_item.id', 'menu_item.name', 'menu_item.url', 'menu_item.parentId', 'menu_item.createdAt',
+            'ms.id', 'ms.name', 'ms.url', 'ms.parentId', 'ms.createdAt'])
+        .getMany();
+        return result;
+      } catch (err) {
+        console.log(err);
+      }
   }
 }
